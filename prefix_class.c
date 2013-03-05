@@ -1,12 +1,3 @@
-/*
- * Compile:
- *	cc  -g -fpic -MD -Wall -D_REENTRANT prefix_class.c -shared -o /opt/nwreg2/local/extensions/dhcp/dex/libprefix_class.so -lgcc
- *
- * Configure:
- *	extension prefix_class_set_class create dex libprefix_class.so prefix_class_set_class init-entry=prefix_class_initentry
- *	dhcp attachExtension pre-packet-encode prefix_class_set_class
- */
-
 #include <errno.h>
 #include <unistd.h>
 #include <pthread.h>
