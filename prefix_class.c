@@ -8,7 +8,7 @@
 
 #include "dex.h"
 
-#define OPTION_PREFIX_CLASS 199
+#define OPTION_PREFIX_CLASS 200
 
 extern int DEXAPI
 prefix_class_initentry( int iExtensionPoint, dex_AttributeDictionary_t* pReq,
