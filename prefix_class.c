@@ -49,8 +49,8 @@ prefix_class_set_class(int iExtensionPoint, dex_AttributeDictionary_t* pReq,
 
 	for( i=0; i< count ; i++ ) {
 		const abytes_t *pPD = pRes->getOptionBytes( pRes, DEX_HOME,
-			    DEX_OPTION_NAME, "ia-pd", DEX_INSTANCE, i, DEX_MOVE_TO,
-			    DEX_END );
+			    DEX_OPTION_NAME, "ia-pd", DEX_INSTANCE, i,
+			    DEX_MOVE_TO, DEX_END);
 
 		if(!pPD)
 			break;
@@ -79,23 +79,30 @@ prefix_class_set_class(int iExtensionPoint, dex_AttributeDictionary_t* pReq,
 			    "prefix-name", 0, 0 );
 			const char *pszType = pRes->get( pRes, 
 			    "lease-binding-type", 0, 0 );
+    			const char *pszAllocGrp = pRes->get( pRes, 
+    			    "prefix-allocation-group", 0, 0 );
 
 			pEnv->log(pEnv, DEX_LOG_INFO, "Lease %s, Prefix %s,"
-			    " Type %s", 
+			    " Type %s Allocation Group %s", 
 			    pszLeaseAddress ? pszLeaseAddress : "NULL", 
 			    pszPrefixName ? pszPrefixName : "NULL",
-			    pszType ? pszType : "NULL");
+			    pszType ? pszType : "NULL",
+			    pszAllocGrp ? pszAllocGrp : "NULL");
 
-			uint16_t uPrefixClass = htons(j);
-			abytes_t aPrefixClass;
-			aPrefixClass.pBuffer = (unsigned char *) &uPrefixClass;
-			aPrefixClass.cbBuffer = sizeof(uPrefixClass); 
+    			uint16_t uPfxClass;
+			if(sscanf(pszAllocGrp, "prefix-class:%hu", &uPfxClass)
+			    == 1) {
+				uPfxClass = htons(uPfxClass);
+				abytes_t aPfxClass;
+				aPfxClass.pBuffer = (uint8_t *) &uPfxClass;
+				aPfxClass.cbBuffer = sizeof(uPfxClass); 
 
-			pRes->putOptionBytes(pRes, &aPrefixClass, 
-			    DEX_OPTION_NAME, "iaprefix", 
-			    DEX_INSTANCE, j,
-			    DEX_OPTION_NUMBER, OPTION_PREFIX_CLASS,
-			    DEX_END );
+				pRes->putOptionBytes(pRes, &aPfxClass, 
+				    DEX_OPTION_NAME, "iaprefix", 
+				    DEX_INSTANCE, j,
+				    DEX_OPTION_NUMBER, OPTION_PREFIX_CLASS,
+				    DEX_END );
+			}
 		}
 		pRes->moveToOption( pRes, DEX_PARENT, DEX_END );
 	}
